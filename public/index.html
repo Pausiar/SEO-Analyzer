@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Analyzer Pro — Analiza tu web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- HERO -->
+  <header class="hero" id="heroSection">
+    <nav class="nav">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>SEO Analyzer <em>Pro</em></span>
+      </div>
+      <div class="nav-links">
+        <a href="#" onclick="document.getElementById('heroSection').scrollIntoView({behavior:'smooth'})">Inicio</a>
+        <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </nav>
+    <div class="hero-content">
+      <div class="hero-badge">Gratis &middot; Sin registro &middot; Open Source</div>
+      <h1>Analiza el SEO de cualquier web <span class="gradient-text">en segundos</span></h1>
+      <p class="subtitle">Obtén un informe profesional con más de 50 checks y recomendaciones accionables para mejorar tu posicionamiento en Google.</p>
+      <form id="analyzeForm" class="search-box">
+        <div class="input-wrapper">
+          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <input type="text" id="urlInput" placeholder="Introduce una URL (ej: ejemplo.com)" autocomplete="url" required>
+        </div>
+        <button type="submit" id="analyzeBtn">
+          <span class="btn-text">Analizar</span>
+          <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+      <div class="trust-badges">
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>10 categorías</span>
+        </div>
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>50+ checks</span>
+        </div>
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Resultados al instante</span>
+        </div>
+      </div>
+    </div>
+    <!-- Animated background -->
+    <div class="hero-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+  </header>
+
+  <!-- LOADING -->
+  <div id="loading" class="loading hidden">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <h2>Analizando <span id="loadingUrl"></span></h2>
+      <p>Revisando meta tags, contenido, enlaces, rendimiento...</p>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div id="errorBox" class="error-box hidden">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    <p id="errorMessage"></p>
+  </div>
+
+  <!-- RESULTS -->
+  <main id="results" class="results hidden">
+    <!-- Action bar -->
+    <div class="action-bar">
+      <button class="action-btn" id="newAnalysisBtn" onclick="document.getElementById('heroSection').scrollIntoView({behavior:'smooth'})">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Nuevo análisis
+      </button>
+      <button class="action-btn primary" id="exportBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar JSON
+      </button>
+    </div>
+
+    <!-- Score Overview -->
+    <section class="score-section">
+      <div class="score-card">
+        <div class="score-ring-container">
+          <svg class="score-ring" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52" />
+            <circle class="ring-fill" id="scoreRing" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="score-value" id="scoreValue">0</div>
+        </div>
+        <div class="score-info">
+          <h2>Puntuación SEO</h2>
+          <p id="scoreLabel" class="score-label"></p>
+          <p class="analyzed-url" id="analyzedUrl"></p>
+          <div class="score-time" id="scoreTime"></div>
+        </div>
+      </div>
+      <div class="summary-cards" id="summaryCards"></div>
+    </section>
+
+    <!-- SERP Preview -->
+    <section class="serp-section" id="serpSection">
+      <h3 class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Vista previa en Google
+      </h3>
+      <div class="serp-preview" id="serpPreview"></div>
+    </section>
+
+    <!-- Category Details -->
+    <section class="categories" id="categoriesContainer"></section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>SEO Analyzer Pro — <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">Open Source en GitHub</a></p>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
