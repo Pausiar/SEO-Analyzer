@@ -20,6 +20,13 @@
   const categoriesContainer = document.getElementById('categoriesContainer');
   const serpPreview = document.getElementById('serpPreview');
   const exportBtn = document.getElementById('exportBtn');
+  const navHomeLink = document.getElementById('navHomeLink');
+  const newAnalysisBtn = document.getElementById('newAnalysisBtn');
+  const rankCheckBtn = document.getElementById('rankCheckBtn');
+  const rankQueriesInput = document.getElementById('rankQueriesInput');
+  const rankStatus = document.getElementById('rankStatus');
+  const rankBest = document.getElementById('rankBest');
+  const rankList = document.getElementById('rankList');
 
   let lastResults = null; // store for export
 
@@ -41,6 +48,31 @@
   const checkSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
 
   // ── FORM SUBMIT ──────────────────────────────────────────
+  if (navHomeLink) {
+    navHomeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const hero = document.getElementById('heroSection');
+      if (hero) hero.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  if (newAnalysisBtn) {
+    newAnalysisBtn.addEventListener('click', () => {
+      const hero = document.getElementById('heroSection');
+      if (hero) hero.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  categoriesContainer.addEventListener('click', (e) => {
+    const header = e.target.closest('.category-header');
+    if (!header || !categoriesContainer.contains(header)) return;
+
+    const card = header.closest('.category-card');
+    if (!card) return;
+    card.classList.toggle('open');
+    header.setAttribute('aria-expanded', card.classList.contains('open') ? 'true' : 'false');
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = urlInput.value.trim();
@@ -57,7 +89,7 @@
         body: JSON.stringify({ url }),
       });
 
-      const data = await res.json();
+      const data = await parseApiResponse(res);
 
       if (!res.ok) {
         throw new Error(data.error || 'Error desconocido');
@@ -84,6 +116,36 @@
     a.click();
     URL.revokeObjectURL(url);
   });
+
+  if (rankCheckBtn) {
+    rankCheckBtn.addEventListener('click', async () => {
+      if (!lastResults || !lastResults.url) {
+        showError('Primero analiza una URL antes de calcular posiciones.');
+        return;
+      }
+
+      rankCheckBtn.disabled = true;
+      rankCheckBtn.textContent = 'Buscando...';
+      rankBest.classList.add('hidden');
+      rankStatus.classList.remove('hidden');
+      rankStatus.textContent = 'Comprobando resultados de búsqueda...';
+      rankList.innerHTML = '';
+
+      try {
+        const manualQueries = readManualQueries();
+        const queries = manualQueries.length > 0 ? manualQueries : buildRankQueries(lastResults);
+        const data = await requestRankData(lastResults.url, queries);
+
+        renderRankResult(data);
+      } catch (err) {
+        rankStatus.classList.remove('hidden');
+        rankStatus.textContent = err.message || 'Error calculando posición SEO.';
+      } finally {
+        rankCheckBtn.disabled = false;
+        rankCheckBtn.textContent = 'Buscar mejor término';
+      }
+    });
+  }
 
   // ── UI HELPERS ───────────────────────────────────────────
   function showLoading(url) {
@@ -181,6 +243,158 @@
 
     // Category cards
     renderCategories(data.categories);
+
+    rankStatus.classList.add('hidden');
+    rankBest.classList.add('hidden');
+    rankList.innerHTML = '';
+  }
+
+  function buildRankQueries(data) {
+    const queries = [];
+    const metaTitle = data?.categories?.meta?.data?.title || '';
+    const headingTexts = data?.categories?.headings?.data?.headingTexts || [];
+    const firstH1 = headingTexts.find((h) => h.level === 'H1')?.text || '';
+    const keywords = data?.categories?.content?.data?.topKeywords || [];
+    const host = getHostLabel(data.url);
+
+    const pushQuery = (value) => {
+      const q = String(value || '').trim().toLowerCase();
+      if (!q || q.length < 3 || q.length > 90) return;
+      if (queries.includes(q)) return;
+      queries.push(q);
+    };
+
+    if (metaTitle) {
+      const cleanTitle = metaTitle.split('|')[0].split('-')[0].split(':')[0].trim();
+      pushQuery(cleanTitle);
+    }
+
+    if (firstH1) {
+      pushQuery(firstH1);
+    }
+
+    keywords.slice(0, 6).forEach((k) => {
+      if (!k || !k.word) return;
+      pushQuery(k.word);
+      if (host) pushQuery(`${k.word} ${host}`);
+    });
+
+    if (host) {
+      pushQuery(host);
+      pushQuery(`${host} web`);
+      pushQuery(`${host} oficial`);
+    }
+
+    return queries.slice(0, 10);
+  }
+
+  function readManualQueries() {
+    const value = rankQueriesInput ? rankQueriesInput.value : '';
+    if (!value) return [];
+
+    const rawParts = value
+      .split(/[,\n]+/)
+      .map((q) => q.trim().toLowerCase())
+      .filter(Boolean);
+
+    const unique = [];
+    rawParts.forEach((q) => {
+      if (q.length < 3 || q.length > 90) return;
+      if (!unique.includes(q)) unique.push(q);
+    });
+
+    return unique.slice(0, 10);
+  }
+
+  async function parseApiResponse(res) {
+    const text = await res.text();
+    if (!text) return {};
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      const isHtml = /^\s*</.test(text);
+      if (isHtml) {
+        const htmlError = new Error('El servidor devolvio HTML en vez de JSON.');
+        htmlError.code = 'NON_JSON_HTML';
+        htmlError.raw = text;
+        htmlError.status = res.status;
+        throw htmlError;
+      }
+      throw new Error('Respuesta invalida del servidor.');
+    }
+  }
+
+  async function requestRankData(url, queries) {
+    const endpoints = ['/api/rank', '/rank'];
+    let lastError = null;
+
+    for (const endpoint of endpoints) {
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, queries })
+        });
+
+        const data = await parseApiResponse(res);
+        if (!res.ok) {
+          throw new Error(data.error || 'No se pudo calcular la posición.');
+        }
+        return data;
+      } catch (error) {
+        lastError = error;
+
+        // fallback only for route/html mismatch
+        if (error.code === 'NON_JSON_HTML') {
+          continue;
+        }
+      }
+    }
+
+    if (lastError && lastError.code === 'NON_JSON_HTML') {
+      throw new Error('No se pudo conectar con el endpoint de posicionamiento. Reinicia el servidor para cargar la version nueva.');
+    }
+
+    throw lastError || new Error('No se pudo calcular la posición.');
+  }
+
+  function getHostLabel(url) {
+    try {
+      const parsed = new URL(url);
+      return parsed.hostname.replace(/^www\./, '').split('.')[0] || '';
+    } catch {
+      return '';
+    }
+  }
+
+  function renderRankResult(data) {
+    const engineLabel = data.engine === 'duckduckgo' ? 'DuckDuckGo' : data.engine;
+    rankStatus.classList.remove('hidden');
+    rankStatus.textContent = `Fuente: ${engineLabel} (estimación SEO).`;
+
+    if (data.bestMatch) {
+      rankBest.classList.remove('hidden');
+      rankBest.innerHTML = `
+        <div class="rank-badge">Puesto #${data.bestMatch.position}</div>
+        <div class="rank-copy">La web aparece mejor cuando buscan: <strong>${escapeHtml(data.bestMatch.query)}</strong></div>
+      `;
+    } else {
+      rankBest.classList.remove('hidden');
+      rankBest.innerHTML = `
+        <div class="rank-copy">No se encontró la web en los primeros resultados de las búsquedas probadas. Prueba con términos más de marca o long-tail.</div>
+      `;
+    }
+
+    rankList.innerHTML = `
+      <div class="rank-list-title">Consultas analizadas</div>
+      ${data.results.map((item) => `
+        <div class="rank-row ${item.position ? 'found' : 'missing'}">
+          <span class="rank-query">${escapeHtml(item.query)}</span>
+          <span class="rank-position">${item.position ? `#${item.position}` : 'sin resultado top'}</span>
+        </div>
+      `).join('')}
+    `;
   }
 
   function animateNumber(el, from, to, duration) {
@@ -278,7 +492,7 @@
       else scoreBg = 'var(--red-bg)';
 
       card.innerHTML = `
-        <div class="category-header" onclick="this.parentElement.classList.toggle('open')">
+        <button type="button" class="category-header" aria-expanded="${index === 0 ? 'true' : 'false'}">
           <div class="category-header-left">
             <div class="category-icon" style="background: ${scoreBg}; color: ${scoreColor};">
               ${icons[cat.icon] || icons.code}
@@ -294,7 +508,7 @@
             </span>
             <span class="chevron">${chevronSvg}</span>
           </div>
-        </div>
+        </button>
         <div class="category-body">
           <div class="category-content">
             ${renderIssues(cat.issues)}
@@ -375,6 +589,10 @@
         <div class="value">${escapeHtml(d.charset)}</div>
         <div class="label">Robots</div>
         <div class="value">${escapeHtml(d.robots)}</div>
+        <div class="label">Keyword principal</div>
+        <div class="value">${escapeHtml(d.primaryKeyword)}</div>
+        <div class="label">Slug</div>
+        <div class="value">${escapeHtml(d.slug)}</div>
       </div>
     `;
   }
@@ -486,6 +704,8 @@
         <div class="value" style="color:${d.emptyAnchors > 0 ? 'var(--yellow)' : 'var(--green)'}">${d.emptyAnchors}</div>
         <div class="label">Anchors genéricos</div>
         <div class="value" style="color:${d.genericAnchors > 0 ? 'var(--yellow)' : 'var(--green)'}">${d.genericAnchors}</div>
+        <div class="label">_blank inseguros</div>
+        <div class="value" style="color:${d.unsafeBlankTargets > 0 ? 'var(--yellow)' : 'var(--green)'}">${d.unsafeBlankTargets}</div>
       </div>
     `;
   }

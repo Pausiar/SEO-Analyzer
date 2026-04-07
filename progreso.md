@@ -1,0 +1,16 @@
+- public/index.html: Eliminados handlers inline onclick; se dejaron ids para control desde JS.
+- public/app.js: Acordeón de categorías migrado a event delegation; corregido despliegue de todos los bloques; añadido sync de aria-expanded; añadidos datos extra de keyword/slug y enlaces _blank inseguros en el render.
+- public/styles.css: Ajustados estilos de category-header para funcionar como button sin alterar diseño.
+- analyzer.js: Endurecidas reglas SEO estilo más estricto (keyword principal, title/description más exigentes, canonical absoluta, slug, jerarquía de headings, densidad keyword, listas, enlaces _blank inseguros y umbrales de rendimiento más estrictos).
+- rank-tracker.js: Nuevo motor de estimación de ranking por consulta usando resultados de búsqueda HTML y detección de puesto por dominio.
+- server.js: Añadido endpoint POST /api/rank para calcular mejor consulta y puesto estimado.
+- public/index.html: Nueva sección "Posición estimada por búsqueda" con botón y área de resultados.
+- public/app.js: Lógica de rank check, generación de consultas sugeridas y render del mejor término + lista de posiciones.
+- public/styles.css: Estilos para el bloque de posicionamiento y estado de resultados encontrados/no encontrados.
+- public/index.html: Añadido textarea opcional para introducir términos de búsqueda manuales en la sección de posicionamiento.
+- public/app.js: Parseo robusto de respuestas API (evita crash por HTML no JSON), soporte de términos manuales y mensaje claro si el servidor devuelve HTML.
+- public/styles.css: Estilos para el nuevo campo de términos y ayuda visual de uso.
+- server.js: Añadido alias POST /rank junto a POST /api/rank para evitar fallos por desfase de ruta en entorno.
+- public/app.js: Añadido fallback automático de endpoint de ranking (/api/rank -> /rank) y manejo específico de errores HTML/no JSON.
+- rank-tracker.js: Corregido el desempaquetado de URLs de DuckDuckGo para soportar redirects absolutos https://duckduckgo.com/l/?uddg=... y detectar bien dominios como Steam.
+- server.js / entorno local: Reiniciado el proceso Node que ocupaba el puerto 3000 y verificado en vivo que /api/rank devuelve Steam en puesto 1 para la URL de Steam.

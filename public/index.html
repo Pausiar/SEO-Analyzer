@@ -17,7 +17,7 @@
         <span>SEO Analyzer <em>Pro</em></span>
       </div>
       <div class="nav-links">
-        <a href="#" onclick="document.getElementById('heroSection').scrollIntoView({behavior:'smooth'})">Inicio</a>
+        <a href="#" id="navHomeLink">Inicio</a>
         <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">GitHub</a>
       </div>
     </nav>
@@ -78,7 +78,7 @@
   <main id="results" class="results hidden">
     <!-- Action bar -->
     <div class="action-bar">
-      <button class="action-btn" id="newAnalysisBtn" onclick="document.getElementById('heroSection').scrollIntoView({behavior:'smooth'})">
+      <button class="action-btn" id="newAnalysisBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
         Nuevo análisis
       </button>
@@ -115,6 +115,23 @@
         Vista previa en Google
       </h3>
       <div class="serp-preview" id="serpPreview"></div>
+    </section>
+
+    <section class="rank-section" id="rankSection">
+      <h3 class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Posición estimada por búsqueda
+      </h3>
+      <div class="rank-card">
+        <p class="rank-hint">Comprueba con qué término de búsqueda es más probable que aparezca tu web y en qué puesto estimado.</p>
+        <label class="rank-input-label" for="rankQueriesInput">Términos personalizados (opcional)</label>
+        <textarea id="rankQueriesInput" class="rank-input" placeholder="Ejemplo: dentista en madrid, clinica dental barrio salamanca, nombre de tu marca"></textarea>
+        <p class="rank-help">Separar por comas o saltos de línea. Si lo dejas vacío, el sistema genera términos automáticos.</p>
+        <button type="button" class="action-btn primary" id="rankCheckBtn">Buscar mejor término</button>
+        <div id="rankStatus" class="rank-status hidden"></div>
+        <div id="rankBest" class="rank-best hidden"></div>
+        <div id="rankList" class="rank-list"></div>
+      </div>
     </section>
 
     <!-- Category Details -->

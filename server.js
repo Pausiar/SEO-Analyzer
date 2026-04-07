@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const { analyzeSite } = require('./analyzer');
+const { findBestRanking } = require('./rank-tracker');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,6 +56,9 @@ app.post('/api/analyze', async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error('Analysis error:', error.message);
+    if (error.httpStatus) {
+      return res.status(400).json({ error: error.message });
+    }
     if (error.code === 'ENOTFOUND') {
       return res.status(400).json({ error: 'No se pudo encontrar el dominio. Verifica la URL.' });
     }
@@ -67,6 +71,29 @@ app.post('/api/analyze', async (req, res) => {
     res.status(500).json({ error: error.message || 'Error al analizar la URL.' });
   }
 });
+
+async function handleRank(req, res) {
+  const { url, queries } = req.body || {};
+
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Se requiere una URL válida.' });
+  }
+
+  if (queries && !Array.isArray(queries)) {
+    return res.status(400).json({ error: 'queries debe ser un array de términos.' });
+  }
+
+  try {
+    const rankData = await findBestRanking(url.trim(), queries || []);
+    res.json(rankData);
+  } catch (error) {
+    console.error('Rank error:', error.message);
+    res.status(500).json({ error: error.message || 'No se pudo calcular la posición SEO.' });
+  }
+}
+
+app.post('/api/rank', handleRank);
+app.post('/rank', handleRank);
 
 app.listen(PORT, () => {
   console.log(`\n  🔍 SEO Analyzer corriendo en http://localhost:${PORT}\n`);

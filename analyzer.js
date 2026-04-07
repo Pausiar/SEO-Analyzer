@@ -13,6 +13,8 @@ class SEOAnalyzer {
   }
 
   analyze() {
+    this.primaryKeyword = this.getPrimaryKeyword();
+
     return {
       url: this.url,
       score: 0, // calculated after
@@ -32,6 +34,39 @@ class SEOAnalyzer {
     };
   }
 
+  getStopWords() {
+    return new Set([
+      'de', 'la', 'el', 'en', 'y', 'a', 'los', 'del', 'las', 'un', 'por', 'con', 'no', 'una', 'su', 'para', 'es', 'al', 'lo', 'como', 'mas', 'o', 'pero', 'sus', 'le', 'ya', 'que', 'se',
+      'the', 'and', 'to', 'of', 'in', 'is', 'it', 'that', 'for', 'was', 'on', 'are', 'with', 'as', 'this', 'be', 'at', 'have', 'from', 'or', 'an', 'by', 'not', 'but', 'has', 'his', 'her', 'its', 'they', 'we', 'you', 'all', 'if', 'do', 'my', 'our', 'your', 'me', 'us'
+    ]);
+  }
+
+  extractTerms(text) {
+    if (!text) return [];
+    const stopWords = this.getStopWords();
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, ' ')
+      .split(/\s+/)
+      .map((w) => w.trim())
+      .filter((w) => w.length > 3 && !stopWords.has(w));
+  }
+
+  getPrimaryKeyword() {
+    const $ = this.$;
+    const title = $('title').text().trim();
+    const h1 = $('h1').first().text().trim();
+    const source = [title, h1].filter(Boolean).join(' ');
+    const terms = this.extractTerms(source);
+    if (terms.length > 0) return terms[0];
+
+    const bodyText = $('body').text();
+    const bodyTerms = this.extractTerms(bodyText);
+    return bodyTerms[0] || '';
+  }
+
   // ─── META TAGS ─────────────────────────────────────────────
   analyzeMeta() {
     const $ = this.$;
@@ -43,29 +78,52 @@ class SEOAnalyzer {
     const viewport = $('meta[name="viewport"]').attr('content') || '';
     const charset = $('meta[charset]').attr('charset') || $('meta[http-equiv="Content-Type"]').attr('content') || '';
     const lang = $('html').attr('lang') || '';
+    const primaryKeyword = this.primaryKeyword;
+    const pathSegments = this.parsedUrl.pathname.split('/').filter(Boolean);
+    const slug = pathSegments[pathSegments.length - 1] || '';
 
     const issues = [];
     let passed = 0;
-    const total = 8;
+    const total = 12;
 
     // Title
     if (!title) {
       issues.push({ severity: 'critical', message: 'Falta la etiqueta <title>', fix: 'Añade un <title> descriptivo de 50-60 caracteres.' });
-    } else if (title.length < 30) {
-      issues.push({ severity: 'warning', message: `El título es demasiado corto (${title.length} caracteres)`, fix: 'El título debería tener entre 50-60 caracteres para un mejor CTR.' });
+    } else if (title.length < 50) {
+      issues.push({ severity: 'warning', message: `El título es corto (${title.length} caracteres)`, fix: 'Mantén el título entre 50 y 60 caracteres.' });
     } else if (title.length > 60) {
-      issues.push({ severity: 'warning', message: `El título es demasiado largo (${title.length} caracteres)`, fix: 'Acorta el título a 60 caracteres máximo para evitar truncamiento en Google.' });
+      issues.push({ severity: 'warning', message: `El título es largo (${title.length} caracteres)`, fix: 'Acorta el título a 60 caracteres máximo para evitar truncamiento en Google.' });
     } else {
       passed++;
+    }
+
+    if (primaryKeyword && title) {
+      if (title.toLowerCase().includes(primaryKeyword)) {
+        passed++;
+      } else {
+        issues.push({ severity: 'warning', message: `La keyword principal "${primaryKeyword}" no aparece en el title`, fix: 'Incluye la keyword principal en el title, preferiblemente al inicio.' });
+      }
+    } else {
+      issues.push({ severity: 'info', message: 'No se pudo inferir keyword principal', fix: 'Define una keyword objetivo clara en title y H1.' });
     }
 
     // Meta Description
     if (!metaDesc) {
       issues.push({ severity: 'critical', message: 'Falta la meta description', fix: 'Añade una meta description de 150-160 caracteres que incluya tu keyword principal.' });
-    } else if (metaDesc.length < 120) {
-      issues.push({ severity: 'warning', message: `Meta description demasiado corta (${metaDesc.length} caracteres)`, fix: 'La meta description debería tener entre 150-160 caracteres.' });
+    } else if (metaDesc.length < 140) {
+      issues.push({ severity: 'warning', message: `Meta description corta (${metaDesc.length} caracteres)`, fix: 'La meta description debería tener entre 140 y 160 caracteres.' });
     } else if (metaDesc.length > 160) {
-      issues.push({ severity: 'warning', message: `Meta description demasiado larga (${metaDesc.length} caracteres)`, fix: 'Reduce la meta description a 160 caracteres máximo.' });
+      issues.push({ severity: 'warning', message: `Meta description larga (${metaDesc.length} caracteres)`, fix: 'Reduce la meta description a 160 caracteres máximo.' });
+    } else {
+      passed++;
+    }
+
+    if (primaryKeyword && metaDesc) {
+      if (metaDesc.toLowerCase().includes(primaryKeyword)) {
+        passed++;
+      } else {
+        issues.push({ severity: 'warning', message: `La keyword principal "${primaryKeyword}" no aparece en la meta description`, fix: 'Incluye la keyword principal de forma natural en la description.' });
+      }
     } else {
       passed++;
     }
@@ -75,6 +133,11 @@ class SEOAnalyzer {
       issues.push({ severity: 'warning', message: 'No se encontró etiqueta canonical', fix: 'Añade <link rel="canonical"> para evitar contenido duplicado.' });
     } else {
       passed++;
+      if (!canonical.startsWith('http://') && !canonical.startsWith('https://')) {
+        issues.push({ severity: 'warning', message: 'La canonical no parece absoluta', fix: 'Usa URL absoluta en canonical para evitar interpretaciones ambiguas.' });
+      } else {
+        passed++;
+      }
     }
 
     // Viewport
@@ -105,11 +168,23 @@ class SEOAnalyzer {
       passed++;
     }
 
-    // Keywords (informational)
-    if (metaKeywords) {
-      issues.push({ severity: 'info', message: 'Meta keywords detectadas (Google las ignora)', fix: 'Las meta keywords no afectan al ranking de Google, pero no perjudican.' });
+    if (slug) {
+      if (slug.length > 75) {
+        issues.push({ severity: 'warning', message: 'Slug de URL demasiado largo', fix: 'Mantén el slug corto y descriptivo (ideal < 75 caracteres).' });
+      } else if (/_/.test(slug)) {
+        issues.push({ severity: 'info', message: 'Slug con guiones bajos', fix: 'Usa guiones medios en lugar de guiones bajos en la URL.' });
+      } else {
+        passed++;
+      }
+    } else {
+      passed++;
     }
-    passed++;
+
+    if (metaKeywords) {
+      issues.push({ severity: 'info', message: 'Meta keywords detectadas (Google las ignora)', fix: 'No aportan ranking en Google; prioriza title, H1 y contenido.' });
+    } else {
+      passed++;
+    }
 
     return {
       name: 'Meta Tags',
@@ -128,6 +203,8 @@ class SEOAnalyzer {
         viewport: viewport || '(no definido)',
         charset: charset || '(no definido)',
         lang: lang || '(no definido)',
+        primaryKeyword: primaryKeyword || '(no inferida)',
+        slug: slug || '(home)',
       }
     };
   }
@@ -150,7 +227,8 @@ class SEOAnalyzer {
 
     const issues = [];
     let passed = 0;
-    const total = 5;
+    const total = 7;
+    const h1Text = $('h1').first().text().trim().toLowerCase();
 
     // H1
     if (headings.h1 === 0) {
@@ -165,6 +243,12 @@ class SEOAnalyzer {
     if (headings.h1 > 0 && headings.h2 === 0) {
       issues.push({ severity: 'warning', message: 'No hay etiquetas H2', fix: 'Usa H2 para estructurar sub-secciones del contenido.' });
     } else {
+      passed++;
+    }
+
+    if (headings.h2 > 0 && headings.h2 < 2) {
+      issues.push({ severity: 'info', message: 'Solo se detectó un H2', fix: 'Incluye al menos 2 H2 para mejorar la escaneabilidad del contenido.' });
+    } else if (headings.h2 >= 2) {
       passed++;
     }
 
@@ -195,6 +279,16 @@ class SEOAnalyzer {
       passed++;
     }
 
+    if (this.primaryKeyword && h1Text) {
+      if (h1Text.includes(this.primaryKeyword)) {
+        passed++;
+      } else {
+        issues.push({ severity: 'warning', message: `El H1 no incluye la keyword principal "${this.primaryKeyword}"`, fix: 'Incluye la keyword principal de forma natural dentro del H1.' });
+      }
+    } else {
+      issues.push({ severity: 'info', message: 'No se pudo validar keyword en H1', fix: 'Define mejor la keyword principal para validar el contenido.' });
+    }
+
     return {
       name: 'Encabezados',
       icon: 'heading',
@@ -217,11 +311,11 @@ class SEOAnalyzer {
     const bodyClone = $('body').clone();
     bodyClone.find('script, style, nav, footer, header, noscript').remove();
     const text = bodyClone.text().replace(/\s+/g, ' ').trim();
-    const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+    const allWords = text.split(/\s+/).filter((w) => w.length > 0);
+    const wordCount = allWords.length;
 
     // Keyword density (top words)
-    const stopWords = new Set(['de', 'la', 'el', 'en', 'y', 'a', 'los', 'del', 'las', 'un', 'por', 'con', 'no', 'una', 'su', 'para', 'es', 'al', 'lo', 'como', 'más', 'o', 'pero', 'sus', 'le', 'ya', 'que', 'se', 'the', 'and', 'to', 'of', 'a', 'in', 'is', 'it', 'that', 'for', 'was', 'on', 'are', 'with', 'as', 'this', 'be', 'at', 'have', 'from', 'or', 'an', 'by', 'not', 'but', 'has', 'his', 'her', 'its', 'they', 'we', 'you', 'all', 'if', 'do', 'my', 'our', 'your', 'me', 'us']);
-    const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 3 && !stopWords.has(w));
+    const words = this.extractTerms(text);
     const freq = {};
     words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
     const topKeywords = Object.entries(freq)
@@ -237,15 +331,16 @@ class SEOAnalyzer {
     const paragraphs = $('p').length;
     const strongTags = $('strong, b').length;
     const emTags = $('em, i').length;
+    const lists = $('ul, ol').length;
 
     const issues = [];
     let passed = 0;
-    const total = 5;
+    const total = 7;
 
-    if (wordCount < 300) {
+    if (wordCount < 600) {
       issues.push({ severity: 'critical', message: `Contenido demasiado corto (${wordCount} palabras)`, fix: 'Google prefiere contenido extenso. Apunta a 800-2000+ palabras para artículos.' });
-    } else if (wordCount < 600) {
-      issues.push({ severity: 'warning', message: `Contenido algo corto (${wordCount} palabras)`, fix: 'Considera ampliar el contenido a al menos 800 palabras.' });
+    } else if (wordCount < 900) {
+      issues.push({ severity: 'warning', message: `Contenido justo (${wordCount} palabras)`, fix: 'Apunta a 900+ palabras para competir mejor en búsquedas informacionales.' });
     } else {
       passed++;
     }
@@ -262,6 +357,12 @@ class SEOAnalyzer {
       passed++;
     }
 
+    if (lists === 0) {
+      issues.push({ severity: 'info', message: 'No se detectaron listas', fix: 'Añade listas (<ul>/<ol>) para mejorar legibilidad y opciones de featured snippets.' });
+    } else {
+      passed++;
+    }
+
     // Check for duplicate content signals
     const titleText = $('title').text().trim().toLowerCase();
     const h1Text = $('h1').first().text().trim().toLowerCase();
@@ -274,11 +375,29 @@ class SEOAnalyzer {
     }
 
     // Content readability (simple check)
-    const avgWordsPerSentence = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
-    if (wordCount > 0 && (wordCount / Math.max(avgWordsPerSentence, 1)) > 30) {
+    const sentenceCount = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+    const avgWordsPerSentence = wordCount / Math.max(sentenceCount, 1);
+    if (wordCount > 0 && avgWordsPerSentence > 24) {
       issues.push({ severity: 'info', message: 'Las frases podrían ser demasiado largas', fix: 'Usa frases más cortas (15-20 palabras) para mejor legibilidad.' });
     } else {
       passed++;
+    }
+
+    if (this.primaryKeyword) {
+      const primaryCount = freq[this.primaryKeyword] || 0;
+      const density = words.length > 0 ? (primaryCount / words.length) * 100 : 0;
+
+      if (primaryCount === 0) {
+        issues.push({ severity: 'warning', message: `La keyword principal "${this.primaryKeyword}" no aparece en el cuerpo`, fix: 'Incluye la keyword objetivo en el contenido principal de forma natural.' });
+      } else if (density < 0.5) {
+        issues.push({ severity: 'info', message: `Densidad baja de keyword principal (${density.toFixed(2)}%)`, fix: 'Refuerza la keyword principal sin forzar, especialmente en secciones clave.' });
+      } else if (density > 2.5) {
+        issues.push({ severity: 'warning', message: `Densidad alta de keyword principal (${density.toFixed(2)}%)`, fix: 'Reduce repeticiones para evitar sobre-optimización.' });
+      } else {
+        passed++;
+      }
+    } else {
+      issues.push({ severity: 'info', message: 'No se pudo validar densidad de keyword principal', fix: 'Define una keyword objetivo clara para análisis más preciso.' });
     }
 
     return {
@@ -293,6 +412,7 @@ class SEOAnalyzer {
         paragraphs,
         strongTags,
         emTags,
+        lists,
         topKeywords
       }
     };
@@ -391,6 +511,7 @@ class SEOAnalyzer {
     let noFollow = 0;
     let emptyAnchors = 0;
     let hashLinks = 0;
+    let unsafeBlankTargets = 0;
     const linkDetails = [];
 
     links.each((_, a) => {
@@ -398,6 +519,7 @@ class SEOAnalyzer {
       const href = el.attr('href') || '';
       const text = el.text().trim();
       const rel = el.attr('rel') || '';
+      const target = (el.attr('target') || '').toLowerCase();
 
       if (href.startsWith('#')) {
         hashLinks++;
@@ -409,6 +531,7 @@ class SEOAnalyzer {
       }
 
       if (!text && !el.find('img').length) emptyAnchors++;
+      if (target === '_blank' && !rel.includes('noopener') && !rel.includes('noreferrer')) unsafeBlankTargets++;
 
       linkDetails.push({
         href: href.substring(0, 80),
@@ -421,7 +544,7 @@ class SEOAnalyzer {
     const totalLinks = links.length;
     const issues = [];
     let passed = 0;
-    const total = 5;
+    const total = 7;
 
     if (totalLinks === 0) {
       issues.push({ severity: 'critical', message: 'No se encontraron enlaces', fix: 'Los enlaces internos y externos son fundamentales para el SEO.' });
@@ -460,6 +583,18 @@ class SEOAnalyzer {
       passed++;
     }
 
+    if (totalLinks > 0 && (hashLinks / totalLinks) > 0.35) {
+      issues.push({ severity: 'info', message: 'Exceso de enlaces internos tipo #ancla', fix: 'Mantén equilibrio entre anchors y enlaces a URLs reales para reforzar el enlazado interno.' });
+    } else {
+      passed++;
+    }
+
+    if (unsafeBlankTargets > 0) {
+      issues.push({ severity: 'warning', message: `${unsafeBlankTargets} enlace(s) con target="_blank" sin rel seguro`, fix: 'Añade rel="noopener noreferrer" a enlaces externos con target="_blank".' });
+    } else {
+      passed++;
+    }
+
     return {
       name: 'Enlaces',
       icon: 'link',
@@ -474,6 +609,7 @@ class SEOAnalyzer {
         noFollow,
         emptyAnchors,
         hashLinks,
+        unsafeBlankTargets,
         genericAnchors: genericCount,
         links: linkDetails.slice(0, 20)
       }
@@ -648,9 +784,9 @@ class SEOAnalyzer {
     // Page size
     const pageSize = Buffer.byteLength(this.html, 'utf8');
     const pageSizeKB = (pageSize / 1024).toFixed(0);
-    if (pageSize > 500000) {
+    if (pageSize > 400000) {
       issues.push({ severity: 'critical', message: `HTML muy pesado (${pageSizeKB}KB)`, fix: 'Reduce el HTML a menos de 500KB. Minifica y elimina código innecesario.' });
-    } else if (pageSize > 200000) {
+    } else if (pageSize > 180000) {
       issues.push({ severity: 'warning', message: `HTML algo pesado (${pageSizeKB}KB)`, fix: 'Considera reducir el tamaño del HTML para mejor rendimiento.' });
     } else {
       passed++;
@@ -666,7 +802,7 @@ class SEOAnalyzer {
 
     // External scripts
     const externalScripts = $('script[src]').length;
-    if (externalScripts > 15) {
+    if (externalScripts > 12) {
       issues.push({ severity: 'warning', message: `${externalScripts} scripts externos`, fix: 'Demasiados scripts bloquean el renderizado. Combina y usa defer/async.' });
     } else {
       passed++;
@@ -674,7 +810,7 @@ class SEOAnalyzer {
 
     // CSS files
     const cssFiles = $('link[rel="stylesheet"]').length;
-    if (cssFiles > 8) {
+    if (cssFiles > 6) {
       issues.push({ severity: 'warning', message: `${cssFiles} archivos CSS externos`, fix: 'Combina archivos CSS para reducir peticiones HTTP.' });
     } else {
       passed++;
@@ -689,9 +825,9 @@ class SEOAnalyzer {
     }
 
     // Load time
-    if (this.loadTime > 3000) {
+    if (this.loadTime > 2500) {
       issues.push({ severity: 'critical', message: `Tiempo de carga alto (${(this.loadTime / 1000).toFixed(1)}s)`, fix: 'Optimiza el servidor y los recursos para cargar en menos de 3 segundos.' });
-    } else if (this.loadTime > 1500) {
+    } else if (this.loadTime > 1200) {
       issues.push({ severity: 'warning', message: `Tiempo de carga moderado (${(this.loadTime / 1000).toFixed(1)}s)`, fix: 'Intenta reducir el tiempo de carga a menos de 1.5 segundos.' });
     } else {
       passed++;
@@ -848,32 +984,56 @@ class SEOAnalyzer {
 
 // ─── MAIN ANALYSIS FUNCTION ──────────────────────────────────
 async function analyzeSite(url) {
-  // Validate and normalize URL
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    url = 'https://' + url;
-  }
+  const rawInput = String(url || '').trim();
+  const hasProtocol = /^https?:\/\//i.test(rawInput);
+  const candidates = hasProtocol ? [rawInput] : [`https://${rawInput}`, `http://${rawInput}`];
 
-  // Validate URL format
-  try {
-    new URL(url);
-  } catch {
-    throw new Error('URL inválida. Introduce una URL válida como https://ejemplo.com');
-  }
-
-  const startTime = Date.now();
-
-  const response = await axios.get(url, {
-    timeout: 15000,
-    maxRedirects: 5,
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (compatible; SEOAnalyzer/1.0)',
-      'Accept': 'text/html,application/xhtml+xml',
-      'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
-    },
-    validateStatus: (status) => status < 400,
+  candidates.forEach((candidate) => {
+    try {
+      new URL(candidate);
+    } catch {
+      throw new Error('URL inválida. Introduce una URL válida como https://ejemplo.com');
+    }
   });
 
-  const loadTime = Date.now() - startTime;
+  let response;
+  let loadTime = 0;
+  let resolvedUrl = candidates[0];
+  let lastError = null;
+
+  for (const candidate of candidates) {
+    const startTime = Date.now();
+    try {
+      const candidateResponse = await axios.get(candidate, {
+        timeout: 15000,
+        maxRedirects: 5,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; SEOAnalyzer/1.0)',
+          'Accept': 'text/html,application/xhtml+xml',
+          'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
+        },
+        validateStatus: () => true,
+      });
+
+      if (candidateResponse.status >= 400) {
+        const statusError = new Error(`La web respondió con estado HTTP ${candidateResponse.status}.`);
+        statusError.httpStatus = candidateResponse.status;
+        throw statusError;
+      }
+
+      response = candidateResponse;
+      loadTime = Date.now() - startTime;
+      resolvedUrl = candidate;
+      break;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (!response) {
+    throw lastError || new Error('No se pudo obtener contenido de la URL.');
+  }
+
   const html = response.data;
   const headers = response.headers;
 
@@ -881,7 +1041,7 @@ async function analyzeSite(url) {
     throw new Error('La URL no devolvió HTML válido.');
   }
 
-  const analyzer = new SEOAnalyzer(url, html, headers, loadTime);
+  const analyzer = new SEOAnalyzer(resolvedUrl, html, headers, loadTime);
   const results = analyzer.analyze();
 
   // Calculate overall score

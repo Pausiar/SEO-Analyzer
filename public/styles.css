@@ -452,6 +452,12 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem 2rem;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
   user-select: none;
   transition: var(--transition);
@@ -744,6 +750,124 @@ body {
   font-weight: 500;
   font-size: 0.75rem;
   margin-top: 0.3rem;
+}
+
+/* rank checker */
+.rank-section {
+  margin-bottom: 2.5rem;
+}
+
+.rank-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.rank-hint {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.rank-input-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.rank-input {
+  width: 100%;
+  min-height: 78px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  font: inherit;
+  padding: 0.65rem 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.rank-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.rank-help {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+}
+
+.rank-status {
+  margin-top: 0.9rem;
+  color: var(--blue);
+  font-size: 0.9rem;
+}
+
+.rank-best {
+  margin-top: 0.9rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(0, 184, 148, 0.3);
+  border-radius: 10px;
+  background: var(--green-bg);
+}
+
+.rank-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(0, 184, 148, 0.2);
+  color: var(--green);
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-bottom: 0.45rem;
+}
+
+.rank-copy {
+  font-size: 0.92rem;
+}
+
+.rank-list {
+  margin-top: 1rem;
+}
+
+.rank-list-title {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.45rem;
+}
+
+.rank-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  padding: 0.55rem 0;
+}
+
+.rank-query {
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.rank-position {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.rank-row.found .rank-position {
+  color: var(--green);
+}
+
+.rank-row.missing .rank-position {
+  color: var(--text-muted);
 }
 
 /* ── FOOTER ──────────────────────────────────────────────── */
