@@ -1,4 +1,4 @@
-// ── SEO Analyzer Pro — Frontend ──────────────────────────────
+// ── SEO Analyzer — Frontend ──────────────────────────────────
 (function () {
   'use strict';
 
@@ -27,8 +27,14 @@
   const rankStatus = document.getElementById('rankStatus');
   const rankBest = document.getElementById('rankBest');
   const rankList = document.getElementById('rankList');
+  const infoCards = document.querySelectorAll('.info-card');
 
   let lastResults = null; // store for export
+
+  // Always start with all info cards closed, even after browser restore.
+  infoCards.forEach((card) => {
+    card.open = false;
+  });
 
   // Icons map (SVG inline)
   const icons = {

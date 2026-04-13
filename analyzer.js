@@ -982,6 +982,24 @@ class SEOAnalyzer {
   }
 }
 
+function appendVercelProtectionBypass(urlValue) {
+  const bypassToken = process.env.VERCEL_PROTECTION_BYPASS;
+  if (!bypassToken) return urlValue;
+
+  try {
+    const parsed = new URL(urlValue);
+    if (!parsed.hostname.endsWith('vercel.app')) return urlValue;
+
+    if (!parsed.searchParams.has('x-vercel-protection-bypass')) {
+      parsed.searchParams.set('x-vercel-protection-bypass', bypassToken);
+    }
+
+    return parsed.toString();
+  } catch {
+    return urlValue;
+  }
+}
+
 // ─── MAIN ANALYSIS FUNCTION ──────────────────────────────────
 async function analyzeSite(url) {
   const rawInput = String(url || '').trim();
@@ -1003,20 +1021,30 @@ async function analyzeSite(url) {
 
   for (const candidate of candidates) {
     const startTime = Date.now();
+    const requestUrl = appendVercelProtectionBypass(candidate);
     try {
-      const candidateResponse = await axios.get(candidate, {
+      const candidateResponse = await axios.get(requestUrl, {
         timeout: 15000,
         maxRedirects: 5,
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; SEOAnalyzer/1.0)',
           'Accept': 'text/html,application/xhtml+xml',
           'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
+          ...(process.env.VERCEL_PROTECTION_BYPASS ? { 'x-vercel-set-bypass-cookie': 'true' } : {}),
         },
         validateStatus: () => true,
       });
 
       if (candidateResponse.status >= 400) {
-        const statusError = new Error(`La web respondió con estado HTTP ${candidateResponse.status}.`);
+        const setCookieHeader = candidateResponse.headers?.['set-cookie'];
+        const setCookieText = Array.isArray(setCookieHeader) ? setCookieHeader.join('; ') : String(setCookieHeader || '');
+        const isVercelProtection = candidateResponse.status === 401 && setCookieText.includes('_vercel_sso_nonce');
+
+        const statusError = new Error(
+          isVercelProtection
+            ? 'La URL está protegida por Vercel Authentication (401). Desactiva la protección para producción o define VERCEL_PROTECTION_BYPASS en el servidor para auditarla automáticamente.'
+            : `La web respondió con estado HTTP ${candidateResponse.status}.`
+        );
         statusError.httpStatus = candidateResponse.status;
         throw statusError;
       }

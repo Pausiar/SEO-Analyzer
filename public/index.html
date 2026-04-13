@@ -3,10 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SEO Analyzer Pro — Analiza tu web</title>
+  <title>SEO Analyzer | Auditor SEO para sitios web</title>
+  <meta name="description" content="SEO Analyzer analiza tu web y detecta mejoras en SEO técnico, contenido, meta etiquetas, velocidad y enlaces, con recomendaciones accionables para posicionar mejor.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://online-seo-analyzer.vercel.app/">
+
+  <meta property="og:title" content="SEO Analyzer | Auditor SEO para sitios web">
+  <meta property="og:description" content="Analiza tu sitio en segundos y recibe recomendaciones SEO accionables sobre contenido, metadatos, velocidad, enlaces y optimización técnica.">
+  <meta property="og:image" content="https://online-seo-analyzer.vercel.app/og-image.svg">
+  <meta property="og:url" content="https://online-seo-analyzer.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="google-site-verification" content="lMgmviyzAEtdI4kk1GYr1Bmbf03BI3K5N0eMR3a0JBQ" />
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7612805768657333" crossorigin="anonymous"></script>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" media="all">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SEO Analyzer",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "url": "https://online-seo-analyzer.vercel.app/",
+      "description": "Herramienta web para analizar SEO on-page y técnico con recomendaciones accionables.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
 </head>
 <body>
   <!-- HERO -->
@@ -14,40 +47,82 @@
     <nav class="nav">
       <div class="logo">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <span>SEO Analyzer <em>Pro</em></span>
-      </div>
-      <div class="nav-links">
-        <a href="#" id="navHomeLink">Inicio</a>
-        <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">GitHub</a>
+        <span>SEO Analyzer</span>
       </div>
     </nav>
     <div class="hero-content">
-      <div class="hero-badge">Gratis &middot; Sin registro &middot; Open Source</div>
-      <h1>Analiza el SEO de cualquier web <span class="gradient-text">en segundos</span></h1>
-      <p class="subtitle">Obtén un informe profesional con más de 50 checks y recomendaciones accionables para mejorar tu posicionamiento en Google.</p>
-      <form id="analyzeForm" class="search-box">
-        <div class="input-wrapper">
-          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <input type="text" id="urlInput" placeholder="Introduce una URL (ej: ejemplo.com)" autocomplete="url" required>
-        </div>
-        <button type="submit" id="analyzeBtn">
-          <span class="btn-text">Analizar</span>
-          <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </button>
-      </form>
-      <div class="trust-badges">
-        <div class="trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>10 categorías</span>
-        </div>
-        <div class="trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>50+ checks</span>
-        </div>
-        <div class="trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          <span>Resultados al instante</span>
-        </div>
+      <div class="hero-layout">
+        <section class="hero-left">
+          <div class="hero-badge">Gratis &middot; Sin registro &middot; Open Source</div>
+          <h1>SEO Analyzer | <span class="gradient-text">Auditor SEO para sitios web</span></h1>
+          <p class="subtitle">Obtén un informe profesional con más de 50 checks y recomendaciones accionables para mejorar tu posicionamiento en Google.</p>
+          <form id="analyzeForm" class="search-box">
+            <div class="input-wrapper">
+              <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" id="urlInput" placeholder="Introduce una URL (ej: ejemplo.com)" autocomplete="url" required>
+            </div>
+            <button type="submit" id="analyzeBtn">
+              <span class="btn-text">Analizar</span>
+              <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </form>
+          <div class="trust-badges">
+            <div class="trust-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>10 categorías</span>
+            </div>
+            <div class="trust-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>50+ checks</span>
+            </div>
+            <div class="trust-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Resultados al instante</span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="hero-right" aria-label="Información del analizador SEO">
+          <div class="info-grid">
+            <details class="info-card">
+              <summary>Qué analiza este SEO analyzer</summary>
+              <p>Revisa metadatos, contenido, encabezados, enlazado interno, datos estructurados, Open Graph y señales móviles para detectar mejoras de posicionamiento.</p>
+            </details>
+
+            <details class="info-card">
+              <summary>Checklist técnico incluido</summary>
+              <ul>
+                <li>Title, meta description, canonical y robots.</li>
+                <li>Schema.org, favicon y consistencia técnica.</li>
+                <li>Rendimiento base y cabeceras de seguridad.</li>
+              </ul>
+            </details>
+
+            <details class="info-card">
+              <summary>Guía de uso rápido</summary>
+              <ol>
+                <li>Analiza la URL principal de tu proyecto.</li>
+                <li>Corrige errores críticos primero.</li>
+                <li>Repite el análisis para medir progreso.</li>
+              </ol>
+            </details>
+
+            <details class="info-card">
+              <summary>Para quién está pensado</summary>
+              <p>Para freelancers SEO, agencias, ecommerce y equipos de contenido que necesitan una auditoría web rápida, clara y accionable sin herramientas complejas.</p>
+            </details>
+
+            <details class="info-card">
+              <summary>Recursos y enlaces útiles</summary>
+              <p>Consulta la <a href="/guia-seo.html">guía SEO interna</a> y el <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">repositorio Open Source</a> para ampliar funcionalidades.</p>
+            </details>
+
+            <details class="info-card">
+              <summary>Objetivo de esta herramienta</summary>
+              <p>Convertir auditorías SEO en un proceso simple: detectar, priorizar, corregir y volver a validar, con foco en mejoras de visibilidad orgánica.</p>
+            </details>
+          </div>
+        </aside>
       </div>
     </div>
     <!-- Animated background -->
@@ -139,7 +214,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>SEO Analyzer Pro — <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">Open Source en GitHub</a></p>
+      <p>SEO Analyzer — <a href="/guia-seo.html">Guía SEO</a> · <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">Open Source en GitHub</a></p>
     </footer>
   </main>
 

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://online-seo-analyzer.vercel.app/sitemap.xml

@@ -95,6 +95,10 @@ async function handleRank(req, res) {
 app.post('/api/rank', handleRank);
 app.post('/rank', handleRank);
 
-app.listen(PORT, () => {
-  console.log(`\n  🔍 SEO Analyzer corriendo en http://localhost:${PORT}\n`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n  🔍 SEO Analyzer corriendo en http://localhost:${PORT}\n`);
+  });
+}
+
+module.exports = app;

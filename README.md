@@ -30,6 +30,40 @@ node server.js
 
 Abre el navegador en `http://localhost:3000`, introduce una URL y obtén el análisis completo.
 
+## Deploy en Vercel
+
+### 1) Vincular tu cuenta/proyecto
+
+```bash
+npx vercel login
+npx vercel link
+```
+
+### 2) Deploy
+
+```bash
+npx vercel --prod
+```
+
+El proyecto ya incluye `vercel.json` y el servidor Express está preparado para ejecutarse como función en Vercel.
+
+## MCP de Vercel (VS Code)
+
+Se agregó la configuración MCP en `.vscode/mcp.json` con el servidor:
+
+```json
+{
+	"servers": {
+		"com.vercel/vercel": {
+			"command": "npx",
+			"args": ["-y", "com.vercel/vercel-mcp"]
+		}
+	}
+}
+```
+
+Cuando lo ejecutes por primera vez, te pedirá autenticación para vincularlo a tu cuenta de Vercel.
+
 ## Stack técnico
 
 - **Backend**: Node.js + Express
@@ -62,6 +96,15 @@ Content-Type: application/json
 ```
 
 Responde con un JSON con la puntuación global, categorías y recomendaciones.
+
+## Nota sobre 401 en URLs de Vercel
+
+Si analizas una URL `*.vercel.app` con protección (Vercel Authentication), el analizador puede recibir `401` aunque lo invoques desde localhost.
+
+Opciones:
+
+- Desactivar la protección de acceso para ese entorno/alias en Vercel.
+- O definir `VERCEL_PROTECTION_BYPASS` en el backend para que el analizador añada automáticamente el bypass en las peticiones salientes.
 
 ## Licencia
 
