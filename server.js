@@ -37,6 +37,17 @@ app.use('/api/', limiter);
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Explicit routes for SEO-critical files (ensure correct Content-Type)
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'public', 'sitemap.xml'));
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'public', 'robots.txt'));
+});
+
 // API endpoint
 app.post('/api/analyze', async (req, res) => {
   const { url } = req.body;
