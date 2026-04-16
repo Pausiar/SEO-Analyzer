@@ -52,6 +52,13 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+const staticLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -64,6 +71,11 @@ app.get('/sitemap.xml', (req, res) => {
 app.get('/robots.txt', (req, res) => {
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
   res.sendFile(path.join(__dirname, 'public', 'robots.txt'));
+});
+
+app.get('/llms.txt', staticLimiter, (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'public', 'llms.txt'));
 });
 
 // API endpoint

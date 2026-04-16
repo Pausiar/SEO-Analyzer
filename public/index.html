@@ -27,17 +27,38 @@
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
+      "@type": "SoftwareApplication",
       "name": "SEO Analyzer",
-      "applicationCategory": "BusinessApplication",
+      "applicationCategory": "WebApplication",
       "operatingSystem": "Web",
       "url": "https://online-seo-analyzer.vercel.app/",
-      "description": "Herramienta web para analizar SEO on-page y técnico con recomendaciones accionables.",
+      "description": "Free web tool that audits any website's on-page and technical SEO in seconds and returns actionable recommendations.",
       "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
-      }
+      },
+      "featureList": [
+        "50+ automated SEO checks across 10 categories",
+        "Instant SEO score (0–100) with critical, warning, and pass breakdown",
+        "SERP preview showing how the page appears in Google results",
+        "Estimated ranking position for custom or auto-generated search queries",
+        "Actionable fix descriptions for every failed check",
+        "JSON export of full audit results",
+        "No account or registration required"
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SEO Analyzer",
+      "url": "https://online-seo-analyzer.vercel.app/",
+      "description": "Open-source SEO auditing tool that checks more than 50 on-page and technical SEO signals for any website.",
+      "sameAs": [
+        "https://github.com/Pausiar/SEO-Analyzer"
+      ]
     }
   </script>
 </head>
@@ -212,9 +233,21 @@
     <!-- Category Details -->
     <section class="categories" id="categoriesContainer"></section>
 
+    <!-- About / What is SEO Analyzer -->
+    <section class="about-section" id="que-es-seo-analyzer" aria-label="Qué es SEO Analyzer">
+      <h2>¿Qué es SEO Analyzer?</h2>
+      <p>SEO Analyzer es una herramienta web gratuita que audita cualquier sitio web en segundos y devuelve más de 50 comprobaciones SEO organizadas en 10 categorías. Detecta errores en metadatos, estructura de encabezados, datos estructurados, Open Graph, rendimiento, seguridad técnica y enlazado, junto con recomendaciones concretas y priorizadas para mejorar el posicionamiento en Google. No requiere registro ni instalación.</p>
+
+      <h3>¿Cómo funciona SEO Analyzer?</h3>
+      <p>Introduce una URL, la herramienta descarga la página y analiza su HTML directamente. En segundos genera una puntuación de 0 a 100, una vista previa SERP y un listado detallado de cada comprobación con su estado (crítico, advertencia o correcto) y la acción de mejora correspondiente.</p>
+
+      <h3>¿Para quién es SEO Analyzer?</h3>
+      <p>Está pensado para freelancers SEO, agencias, equipos de contenido y desarrolladores que necesitan una auditoría web rápida y accionable sin depender de herramientas complejas o de pago. Al ser open source (MIT), cualquiera puede revisar el código o desplegarlo en su propio servidor.</p>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
-      <p>SEO Analyzer — <a href="/guia-seo.html">Guía SEO</a> · <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">Open Source en GitHub</a></p>
+      <p>SEO Analyzer — <a href="/guia-seo.html">Guía SEO</a> · <a href="/faq.html">FAQ</a> · <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">Open Source en GitHub</a></p>
     </footer>
   </main>
 
