@@ -9,6 +9,24 @@ const { findBestRanking } = require('./rank-tracker');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Canonical-domain redirect — prevents Vercel preview URLs from being indexed
+// as duplicate pages ("Página alternativa con etiqueta canónica adecuada").
+const CANONICAL_HOST = 'online-seo-analyzer.vercel.app';
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    const host = req.headers.host || '';
+    if (host && host !== CANONICAL_HOST) {
+      // Reconstruct the URL via the URL constructor so that req.originalUrl
+      // (user-provided) cannot introduce an open-redirect (e.g. "//evil.com").
+      const safe = new URL(req.originalUrl, `https://${CANONICAL_HOST}`);
+      safe.host = CANONICAL_HOST;
+      safe.protocol = 'https:';
+      return res.redirect(301, safe.toString());
+    }
+    next();
+  });
+}
+
 // Security
 app.use(helmet({
   contentSecurityPolicy: {
