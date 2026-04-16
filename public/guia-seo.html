@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía SEO completa | SEO Analyzer</title>
+  <meta name="description" content="Guía SEO práctica: aprende a optimizar title, meta description, canonical, headings, velocidad y enlaces para posicionar mejor en Google.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://online-seo-analyzer.vercel.app/guia-seo.html">
+
+  <meta property="og:title" content="Guía SEO completa | SEO Analyzer">
+  <meta property="og:description" content="Guía SEO práctica: aprende a optimizar title, meta description, canonical, headings, velocidad y enlaces para posicionar mejor en Google.">
+  <meta property="og:image" content="https://online-seo-analyzer.vercel.app/og-image.svg">
+  <meta property="og:url" content="https://online-seo-analyzer.vercel.app/guia-seo.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7612805768657333" crossorigin="anonymous"></script>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" media="all">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Guía SEO completa",
+      "description": "Guía práctica para optimizar los factores SEO on-page más importantes y posicionar mejor en Google.",
+      "url": "https://online-seo-analyzer.vercel.app/guia-seo.html",
+      "author": {
+        "@type": "Organization",
+        "name": "SEO Analyzer",
+        "url": "https://online-seo-analyzer.vercel.app/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "SEO Analyzer",
+        "url": "https://online-seo-analyzer.vercel.app/"
+      },
+      "datePublished": "2026-04-16",
+      "dateModified": "2026-04-16"
+    }
+  </script>
+
+  <style>
+    /* Guide-specific layout on top of the shared design system */
+    .guide-hero {
+      position: relative;
+      padding: 7rem 2rem 4rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .guide-hero .hero-bg { pointer-events: none; }
+    .guide-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .guide-hero p.subtitle {
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .guide-body {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+    .guide-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .guide-section h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .guide-section h2 .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary-glow);
+      flex-shrink: 0;
+    }
+    .guide-section p,
+    .guide-section li {
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-size: 0.97rem;
+    }
+    .guide-section ul,
+    .guide-section ol {
+      padding-left: 1.4rem;
+      margin-top: 0.5rem;
+    }
+    .guide-section li { margin-bottom: 0.35rem; }
+    .guide-section strong { color: var(--text); }
+    .guide-section code {
+      background: rgba(108, 92, 231, 0.15);
+      color: var(--accent);
+      padding: 0.1em 0.45em;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+    .tip-box {
+      margin-top: 1rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--green);
+      background: var(--green-bg);
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .warn-box {
+      margin-top: 1rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--yellow);
+      background: var(--yellow-bg);
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .cta-bar {
+      margin-top: 2.5rem;
+      text-align: center;
+    }
+    .cta-bar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    .cta-bar a:hover {
+      background: var(--accent);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+    .guide-footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      padding: 2rem 1rem 3rem;
+    }
+    .guide-footer a { color: var(--accent); text-decoration: none; }
+    .guide-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="guide-hero">
+    <nav class="nav">
+      <a class="logo" href="/" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:.5rem;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>SEO Analyzer</span>
+      </a>
+    </nav>
+
+    <div class="hero-badge" style="display:inline-block;margin-bottom:1rem;">Guía · Gratis · Sin registro</div>
+    <h1>Guía SEO <span class="gradient-text">on-page completa</span></h1>
+    <p class="subtitle">Todo lo que necesitas saber para optimizar cada factor SEO que analiza nuestra herramienta y subir posiciones en Google.</p>
+
+    <div class="hero-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="guide-body">
+
+    <!-- 1. Title -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </span>
+        1. Etiqueta &lt;title&gt;
+      </h2>
+      <p>El <code>&lt;title&gt;</code> es el factor on-page más influyente. Aparece como enlace azul en los resultados de búsqueda (SERP) y le dice a Google de qué trata la página.</p>
+      <ul>
+        <li><strong>Longitud óptima:</strong> entre 50 y 60 caracteres (≈ 560 px).</li>
+        <li><strong>Incluye la keyword principal</strong> lo más a la izquierda posible.</li>
+        <li>Cada página debe tener un título único; los duplicados confunden al buscador.</li>
+        <li>Evita mayúsculas excesivas o listas de keywords separadas por comas.</li>
+      </ul>
+      <div class="tip-box">✅ Ejemplo correcto: <code>SEO Analyzer | Auditor SEO gratuito para sitios web</code></div>
+    </article>
+
+    <!-- 2. Meta description -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </span>
+        2. Meta description
+      </h2>
+      <p>Aunque no es un factor de ranking directo, una buena descripción mejora el CTR (porcentaje de clics) desde los resultados.</p>
+      <ul>
+        <li><strong>Longitud óptima:</strong> 140–160 caracteres.</li>
+        <li>Incluye la keyword y una llamada a la acción clara.</li>
+        <li>Debe resumir el contenido de la página de forma única y atractiva.</li>
+      </ul>
+      <div class="warn-box">⚠️ Si la dejas vacía, Google genera un fragmento automático que a menudo queda cortado o fuera de contexto.</div>
+    </article>
+
+    <!-- 3. Canonical -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </span>
+        3. Etiqueta canonical
+      </h2>
+      <p>La etiqueta <code>&lt;link rel="canonical"&gt;</code> indica a Google cuál es la URL preferida cuando existe contenido duplicado o muy similar (por ejemplo, versiones <code>http</code> vs <code>https</code>, con o sin <code>www</code>, parámetros UTM, etc.).</p>
+      <ul>
+        <li>Usa siempre una <strong>URL absoluta</strong>: <code>https://tudominio.com/pagina/</code>.</li>
+        <li>En páginas únicas, apunta la canonical a sí misma (auto-referencial).</li>
+        <li>Si tu sitio tiene staging o preview URLs (p. ej. Vercel), añade un <strong>redirect 301</strong> desde esas URLs al dominio canónico para que Google no las indexe como páginas alternativas.</li>
+      </ul>
+      <div class="tip-box">✅ Una sola canonical correcta evita el estado <em>"Página alternativa con etiqueta canónica adecuada"</em> en Google Search Console.</div>
+    </article>
+
+    <!-- 4. Headings -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+        </span>
+        4. Jerarquía de encabezados (H1–H6)
+      </h2>
+      <p>Los encabezados estructuran el contenido y ayudan tanto a los usuarios como a los rastreadores a entender la organización de la página.</p>
+      <ul>
+        <li>Debe existir <strong>exactamente un H1</strong> por página, que incluya la keyword principal.</li>
+        <li>Los H2 definen las secciones principales; los H3 son subsecciones de H2, y así sucesivamente.</li>
+        <li>No saltes niveles (de H1 a H4 directamente) ni uses encabezados solo por estética.</li>
+      </ul>
+    </article>
+
+    <!-- 5. Contenido -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </span>
+        5. Calidad y densidad de contenido
+      </h2>
+      <p>El contenido sigue siendo el principal factor de posicionamiento. Google premia páginas completas, útiles y originales.</p>
+      <ul>
+        <li><strong>Longitud mínima recomendada:</strong> 300 palabras para páginas informativas; 800+ para artículos.</li>
+        <li><strong>Densidad de keyword:</strong> 0,5–2 %. Evita el keyword stuffing (repetir en exceso).</li>
+        <li>Usa variaciones semánticas y sinónimos de tu keyword principal.</li>
+        <li>Incluye listas, tablas e imágenes para mejorar la legibilidad.</li>
+      </ul>
+    </article>
+
+    <!-- 6. Open Graph -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </span>
+        6. Open Graph y metadatos sociales
+      </h2>
+      <p>Las etiquetas Open Graph controlan cómo se muestra tu página al compartirla en redes sociales (Facebook, LinkedIn, WhatsApp…).</p>
+      <ul>
+        <li>Incluye siempre: <code>og:title</code>, <code>og:description</code>, <code>og:image</code> y <code>og:url</code>.</li>
+        <li>La imagen debe tener al menos <strong>1200 × 630 px</strong>.</li>
+        <li>Añade <code>twitter:card</code> con valor <code>summary_large_image</code> para Twitter/X.</li>
+      </ul>
+    </article>
+
+    <!-- 7. Schema.org -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </span>
+        7. Datos estructurados (Schema.org)
+      </h2>
+      <p>Los datos estructurados en formato JSON-LD permiten a Google entender el tipo de contenido y mostrar <em>rich results</em> (fragmentos enriquecidos) en los resultados.</p>
+      <ul>
+        <li>Tipos más usados: <code>WebApplication</code>, <code>Article</code>, <code>Product</code>, <code>FAQPage</code>, <code>LocalBusiness</code>.</li>
+        <li>Coloca el bloque <code>&lt;script type="application/ld+json"&gt;</code> en el <code>&lt;head&gt;</code>.</li>
+        <li>Valida con la <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">herramienta de prueba de resultados enriquecidos de Google</a>.</li>
+      </ul>
+    </article>
+
+    <!-- 8. Velocidad -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+        </span>
+        8. Velocidad y Core Web Vitals
+      </h2>
+      <p>Desde 2021 la velocidad de página es un factor oficial de ranking a través de los Core Web Vitals.</p>
+      <ul>
+        <li><strong>LCP</strong> (Largest Contentful Paint): debe ser &lt; 2,5 s.</li>
+        <li><strong>INP</strong> (Interaction to Next Paint): debe ser &lt; 200 ms.</li>
+        <li><strong>CLS</strong> (Cumulative Layout Shift): debe ser &lt; 0,1.</li>
+        <li>Optimiza imágenes (WebP, lazy-load), minimiza CSS/JS y usa caché del servidor.</li>
+      </ul>
+      <div class="tip-box">✅ Mide con <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener">PageSpeed Insights</a> y corrige los recursos que bloquean el renderizado.</div>
+    </article>
+
+    <!-- 9. Enlaces -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </span>
+        9. Enlazado interno y externo
+      </h2>
+      <p>Los enlaces transmiten autoridad y ayudan a los rastreadores a descubrir páginas nuevas.</p>
+      <ul>
+        <li>Usa <strong>textos ancla descriptivos</strong>; evita "haz clic aquí" o "más info".</li>
+        <li>Los enlaces externos que abren en nueva pestaña (<code>target="_blank"</code>) deben incluir <code>rel="noopener noreferrer"</code> por seguridad.</li>
+        <li>Evita enlaces rotos (404); auditarlos periódicamente mejora la experiencia de usuario y el rastreo.</li>
+        <li>Un buen enlazado interno distribuye el <em>PageRank</em> entre las páginas más importantes del sitio.</li>
+      </ul>
+    </article>
+
+    <!-- 10. Técnico -->
+    <article class="guide-section">
+      <h2>
+        <span class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        </span>
+        10. SEO técnico esencial
+      </h2>
+      <p>Además del contenido, varios aspectos técnicos son imprescindibles para que Google pueda rastrear e indexar tu sitio correctamente.</p>
+      <ul>
+        <li><strong>robots.txt:</strong> define qué rutas puede rastrear Googlebot.</li>
+        <li><strong>sitemap.xml:</strong> lista todas las URLs importantes para facilitar el rastreo.</li>
+        <li><strong>HTTPS:</strong> el cifrado SSL/TLS es obligatorio y es señal de confianza.</li>
+        <li><strong>Etiqueta viewport:</strong> imprescindible para la indexación Mobile-First de Google.</li>
+        <li><strong>Atributo lang:</strong> indica el idioma del documento (<code>&lt;html lang="es"&gt;</code>).</li>
+        <li><strong>Favicon:</strong> mejora la percepción de marca en las SERPs y marcadores.</li>
+      </ul>
+    </article>
+
+    <div class="cta-bar">
+      <a href="/">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Analiza tu web ahora gratis
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="guide-footer">
+    <p>SEO Analyzer — <a href="/guia-seo.html">Guía SEO</a> · <a href="https://github.com/Pausiar/SEO-Analyzer" target="_blank" rel="noopener">Open Source en GitHub</a></p>
+  </footer>
+
+</body>
+</html>
