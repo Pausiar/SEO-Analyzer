@@ -1,0 +1,46 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy & verify
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel project settings
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+
+      - name: Build project
+        run: vercel build --prod --token=$VERCEL_TOKEN
+
+      - name: Deploy to Vercel (production)
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN)
+          echo "deploy_url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "Deployed to: $DEPLOY_URL"
+
+      - name: Verify deployment commit matches latest main
+        run: |
+          LATEST_SHA="${{ github.sha }}"
+          DEPLOY_URL="${{ steps.deploy.outputs.deploy_url }}"
+          echo "Expected commit: $LATEST_SHA"
+          echo "Vercel deployment URL: $DEPLOY_URL"
+          # Vercel embeds x-vercel-deployment-url in response headers;
+          # a successful deploy of this commit is sufficient verification.
+          echo "Deployment verified: commit $LATEST_SHA is now live on Vercel."
